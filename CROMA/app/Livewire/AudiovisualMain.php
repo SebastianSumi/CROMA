@@ -12,7 +12,6 @@ class AudiovisualMain extends Component
 {
     use WithPagination;
 
-    // Buscador adaptado para el "tipo" de video/edición
     public $search = '';
 
     public $registro_id;

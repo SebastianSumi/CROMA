@@ -12,7 +12,7 @@ class OffsetMain extends Component
 {
     use WithPagination;
 
-    // Buscador adaptado para el "tipo_material"
+
     public $search = '';
 
     public $registro_id;

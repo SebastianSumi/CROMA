@@ -3,12 +3,21 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use Livewire\Attributes\Validate;
 use App\Models\Pago;
+use Flux\Flux;
+use Carbon\Carbon;
 
 class PagoMain extends Component
 {
-    // Propiedades del formulario
+    use WithPagination;
+
+
+    public $search = '';
+
+    public $registro_id;
+
     #[Validate(['required', 'integer', 'exists:pedido,id_pedido'])]
     public $id_pedido;
 
@@ -18,79 +27,93 @@ class PagoMain extends Component
     #[Validate(['required', 'date'])]
     public $fecha_pago;
 
-    // Estado del CRUD
-    public $idSeleccionado;
-    public $estaEditando = false;
+    public function render()
+    {
 
-    /**
-     * CREAR
-     */
+        $pagos = Pago::where('id_pedido', 'LIKE', '%' . $this->search . '%')
+            ->latest('id_pago')
+            ->paginate(10);
+
+        return view('livewire.pago-main', compact('pagos'));
+    }
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function crear()
+    {
+        $this->reset(['registro_id', 'id_pedido', 'monto', 'fecha_pago']);
+
+        $this->fecha_pago = Carbon::now()->format('Y-m-d\TH:i');
+
+        $this->modal('modal-pago')->show();
+    }
+
     public function guardar()
     {
         $this->validate();
 
-        Pago::create([
-            'id_pago'   => rand(10000, 99999),
-            'id_pedido' => $this->id_pedido,
-            'monto'     => $this->monto,
-            'fecha_pago'=> $this->fecha_pago,
-        ]);
+        if (!$this->registro_id) {
+            Pago::create([
+                'id_pago'    => rand(10000, 99999),
+                'id_pedido'  => $this->id_pedido,
+                'monto'      => $this->monto,
+                'fecha_pago' => $this->fecha_pago,
+            ]);
 
-        $this->limpiarFormulario();
-        session()->flash('success', 'Pago registrado con éxito.');
+            Flux::toast(
+                heading: 'Pago Registrado',
+                text: 'El ingreso de dinero se guardó correctamente.',
+                variant: 'success'
+            );
+        } else {
+            $pago = Pago::findOrFail($this->registro_id);
+            $pago->update([
+                'id_pedido'  => $this->id_pedido,
+                'monto'      => $this->monto,
+                'fecha_pago' => $this->fecha_pago,
+            ]);
+
+            Flux::toast(
+                heading: 'Pago Actualizado',
+                text: 'Los datos financieros se modificaron correctamente.',
+                variant: 'success'
+            );
+        }
+
+        $this->modal('modal-pago')->close();
     }
 
-    /**
-     * LEER PARA EDITAR
-     */
-    public function editar($id)
+    public function editar(Pago $item)
     {
-        $pago = Pago::findOrFail($id);
+        $this->registro_id = $item->id_pago;
+        $this->id_pedido   = $item->id_pedido;
+        $this->monto       = $item->monto;
 
-        $this->idSeleccionado = $pago->id_pago;
-        $this->id_pedido = $pago->id_pedido;
-        $this->monto = $pago->monto;
-        $this->fecha_pago = $pago->fecha_pago->format('Y-m-d');
+        $this->fecha_pago  = Carbon::parse($item->fecha_pago)->format('Y-m-d\TH:i');
 
-        $this->estaEditando = true;
+        $this->modal('modal-pago')->show();
     }
 
-    /**
-     * ACTUALIZAR
-     */
-    public function actualizar()
+    public function confirmar(Pago $item)
     {
-        $this->validate();
-
-        $pago = Pago::findOrFail($this->idSeleccionado);
-        $pago->update([
-            'id_pedido' => $this->id_pedido,
-            'monto'     => $this->monto,
-            'fecha_pago'=> $this->fecha_pago,
-        ]);
-
-        $this->limpiarFormulario();
-        session()->flash('success', 'Pago actualizado con éxito.');
+        $this->registro_id = $item->id_pago;
+        $this->modal('modal-eliminar')->show();
     }
 
-    /**
-     * ELIMINAR
-     */
-    public function eliminar($id)
+    public function eliminar()
     {
-        Pago::findOrFail($id)->delete();
-        session()->flash('success', 'Pago eliminado del sistema.');
-    }
+        $pago = Pago::findOrFail($this->registro_id);
+        $pago->delete();
 
-    public function limpiarFormulario()
-    {
-        $this->reset(['id_pedido', 'monto', 'fecha_pago', 'idSeleccionado', 'estaEditando']);
-    }
+        Flux::toast(
+            heading: 'Pago Eliminado',
+            text: 'El registro financiero fue removido del sistema.',
+            variant: 'success'
+        );
 
-    public function render()
-    {
-        return view('livewire.pago-main', [
-            'pagos' => Pago::with('pedido')->get()
-        ]);
+        $this->modal('modal-eliminar')->close();
     }
 }
