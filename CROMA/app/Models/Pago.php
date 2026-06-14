@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class Pago extends Model
 {
-    protected $table = 'pago'; // Forzamos el nombre en singular de tu diseño
+    protected $table = 'pago';
 
     protected $primaryKey = 'id_pago';
 
