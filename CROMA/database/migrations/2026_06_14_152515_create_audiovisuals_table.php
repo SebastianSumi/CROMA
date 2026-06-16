@@ -24,7 +24,7 @@ return new class extends Migration
                   ->onUpdate('cascade');
         });
 
-        DB::statement('ALTER TABLE edicion_audiovisual ADD CONSTRAINT CHK_audiovisual_duracion_no_negativa CHECK (duracion_segundos >= 0)');
+        DB::statement('ALTER TABLE audiovisuals ADD CONSTRAINT CHK_audiovisual_duracion_no_negativa CHECK (duracion_segundos >= 0)');
     }
 
     public function down(): void
