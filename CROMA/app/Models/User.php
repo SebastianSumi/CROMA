@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\Cliente;
 
 /**
  * @property int $id
@@ -50,6 +51,11 @@ class User extends Authenticatable implements PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function cliente()
+    {
+        return $this->hasOne(Cliente::class, 'id_cliente', 'id_cliente');
     }
 
     /**

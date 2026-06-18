@@ -5,6 +5,8 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
+use App\Models\Cliente;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -16,6 +18,8 @@ class CreateNewUser implements CreatesNewUsers
      * Validate and create a newly registered user.
      *
      * @param  array<string, string>  $input
+     * @return \App\Models\User
+     * @throws ValidationException
      */
     public function create(array $input): User
     {
@@ -24,10 +28,21 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        return User::create([
+        $cliente = Cliente::create([
+            'nombre' => $input['name'],
+            'paterno' => $input['paterno'],
+            'materno' => $input['materno'],
+            'email' => $input['email'],
+            'telefono' => $input['telefono'],
+        ]);
+
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
-            'password' => $input['password'],
+            'password' => Hash::make($input['password']),
+            'cliente_id' => $cliente->id, // 🔗 Conexión establecida aquí
         ]);
+
+        return $user;
     }
 }
