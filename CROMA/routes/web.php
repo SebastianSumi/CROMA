@@ -1,13 +1,20 @@
 <?php
 
+use App\Livewire\CatalogShowcase;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
+Route::get('/catalogo', CatalogShowcase::class)->name('catalogo.publico');
+Route::get('/trabajos-anteriores', \App\Livewire\TrabajoAnteriorMain::class)->name('trabajos.index');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
-    // Rutas del Catálogo y Módulos de Producción
+    // Módulo de Administración del Catálogo (CRUD de Productos)
+    Route::get('/productos', \App\Livewire\ProductMain::class)->name('productos.index');
+
+    // Rutas de los Módulos de Producción existentes
     Route::get('/servicios', \App\Livewire\ListarServiciosMain::class);
     Route::get('/impresion', \App\Livewire\ImpresionMain::class);
     Route::get('/offset', \App\Livewire\OffsetMain::class);

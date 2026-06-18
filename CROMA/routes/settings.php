@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\ListarServiciosMain;
+use App\Livewire\ProductMain;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
