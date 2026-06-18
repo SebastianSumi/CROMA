@@ -13,14 +13,12 @@ class PedidoMain extends Component
 {
     use WithPagination;
 
-    // Buscador interactivo
     public $search = '';
 
-    // Estados del CRUD
+
     public $registro_id;
     public $estaEditando = false;
 
-    // Propiedades del Modelo con validación estricta
     #[Validate(['required', 'integer', 'exists:cliente,id_cliente'])]
     public $id_cliente;
 
@@ -36,12 +34,10 @@ class PedidoMain extends Component
     #[Validate(['nullable', 'string'])]
     public $observaciones;
 
-    /**
-     * Renderiza la vista del componente inyectando los datos paginados
-     */
+
     public function render()
     {
-        // Búsqueda por ID de cliente o por estado del pedido
+
         $pedidos = Pedido::where('id_cliente', 'LIKE', '%' . $this->search . '%')
             ->orWhere('estado', 'LIKE', '%' . $this->search . '%')
             ->latest('fecha_registro')
@@ -50,17 +46,12 @@ class PedidoMain extends Component
         return view('livewire.pedido-main', compact('pedidos'));
     }
 
-    /**
-     * Resetea la paginación al escribir en el buscador
-     */
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    /**
-     * Prepara el formulario para crear un nuevo registro
-     */
+
     public function crear()
     {
         $this->limpiarFormulario();
@@ -73,9 +64,7 @@ class PedidoMain extends Component
         $this->modal('modal-pedido')->show();
     }
 
-    /**
-     * Guarda un nuevo registro o actualiza uno existente
-     */
+
     public function guardar()
     {
         $this->validate();
@@ -97,7 +86,7 @@ class PedidoMain extends Component
                 variant: 'success'
             );
         } else {
-            // Lógica de Actualización
+
             $pedido = Pedido::findOrFail($this->registro_id);
             $pedido->update([
                 'id_cliente'    => $this->id_cliente,
@@ -117,9 +106,6 @@ class PedidoMain extends Component
         $this->modal('modal-pedido')->close();
     }
 
-    /**
-     * Carga los datos de un registro en el formulario para su edición
-     */
     public function editar(Pedido $item)
     {
         $this->registro_id   = $item->id_pedido;
@@ -133,18 +119,12 @@ class PedidoMain extends Component
         $this->modal('modal-pedido')->show();
     }
 
-    /**
-     * Abre el modal de confirmación antes de eliminar
-     */
     public function confirmar(Pedido $item)
     {
         $this->registro_id = $item->id_pedido;
         $this->modal('modal-eliminar')->show();
     }
 
-    /**
-     * Elimina permanentemente el registro de la base de datos
-     */
     public function eliminar()
     {
         Pedido::findOrFail($this->registro_id)->delete();

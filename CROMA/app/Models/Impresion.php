@@ -41,8 +41,5 @@ class Impresion extends Model
         ];
     }
 
-    public function detallePedido(): BelongsTo
-    {
-        return $this->belongsTo(DetallePedido::class, 'id_detalle', 'id_detalle');
-    }
+    public function detallePedido(): BelongsTo {return $this->belongsTo(DetallePedido::class, 'id_detalle', 'id_detalle');}
 }

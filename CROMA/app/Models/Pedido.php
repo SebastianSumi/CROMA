@@ -42,7 +42,7 @@ class Pedido extends Model
         ];
     }
 
-    // Relaciones principales
+
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');

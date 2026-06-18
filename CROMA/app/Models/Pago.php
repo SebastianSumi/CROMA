@@ -23,7 +23,7 @@ class Pago extends Model
 
     protected $primaryKey = 'id_pago';
 
-    public $incrementing = false; // Usas IDs manuales enteros según tu esquema
+    public $incrementing = false; // Usas IDs manuales
 
     public $timestamps = false;
 
@@ -37,5 +37,5 @@ class Pago extends Model
         ];
     }
 
-    //public function pedido(): BelongsTo{return $this->belongsTo(Pedido::class, 'id_pedido', 'id_pedido');}
+    public function pedido(): BelongsTo{return $this->belongsTo(Pedido::class, 'id_pedido', 'id_pedido');}
 }

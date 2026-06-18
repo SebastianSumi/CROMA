@@ -12,10 +12,8 @@ class DisenoGraficoMain extends Component
 {
     use WithPagination;
 
-    // Buscador interactivo
     public $search = '';
 
-    // Estados del CRUD
     public $registro_id;
     public $estaEditando = false;
 

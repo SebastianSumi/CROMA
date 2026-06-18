@@ -14,7 +14,7 @@ class ImpresionMain extends Component
 
     public $search = '';
 
-    // Identificador para saber si estamos editando o creando
+
     public $registro_id;
 
     #[Validate(['required', 'integer', 'exists:detalle_pedido,id_detalle'])]
@@ -60,7 +60,7 @@ class ImpresionMain extends Component
         $this->validate();
 
         if (!$this->registro_id) {
-            // Lógica de Creación
+
             Impresion::create([
                 'id_impresion'   => rand(10000, 99999), // Solo porque tu ID no es autoincremental
                 'id_detalle'     => $this->id_detalle,
@@ -77,7 +77,7 @@ class ImpresionMain extends Component
                 variant: 'success'
             );
         } else {
-            // Lógica de Actualización
+
             $imp = Impresion::findOrFail($this->registro_id);
             $imp->update([
                 'id_detalle'     => $this->id_detalle,

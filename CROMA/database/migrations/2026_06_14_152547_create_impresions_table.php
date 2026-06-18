@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('impresions', function (Blueprint $table) {
+        Schema::create('impresion', function (Blueprint $table) {
             $table->integer('id_impresion')->primary();
             $table->integer('id_detalle');
             $table->string('tipo_documento', 30);

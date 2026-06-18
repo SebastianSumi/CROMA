@@ -65,4 +65,33 @@
 
             <flux:input wire:model="color" label="Color de la Cinta" placeholder="Ej: Azul Marino, Rojo, Blanco" />
 
-            <flux:textarea wire:model="texto
+            <flux:textarea wire:model="texto_impreso" label="Texto a Imprimir" placeholder="Ej: STAFF 2026, INVITADO ESPECIAL" />
+
+            <div class="flex">
+                <flux:spacer />
+                <flux:button wire:click="guardar()" variant="primary" color="violet" icon="arrow-turn-down-right">
+                    {{ $registro_id ? 'Actualizar Lanyard' : 'Guardar Lanyard' }}
+                </flux:button>
+            </div>
+        </div>
+    </flux:modal>
+
+    <flux:modal name="modal-eliminar" class="min-w-[22rem]">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">¿Eliminar registro?</flux:heading>
+                <flux:text class="mt-2">
+                    Estás a punto de eliminar este diseño de cinta (lanyard).<br>
+                    Esta acción no se puede deshacer.
+                </flux:text>
+            </div>
+            <div class="flex gap-2">
+                <flux:spacer />
+                <flux:modal.close>
+                    <flux:button variant="ghost">Cancelar</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="eliminar()" type="submit" variant="danger">Sí, eliminar</flux:button>
+            </div>
+        </div>
+    </flux:modal>
+</div>

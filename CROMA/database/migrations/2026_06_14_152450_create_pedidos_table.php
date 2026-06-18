@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('pedido', function (Blueprint $table) {
             $table->integer('id_pedido')->primary();
-            $table->integer('id_cliente');
+            $table->unsignedBigInteger('id_cliente');
             $table->date('fecha');
             $table->string('estado', 20); // Ej: 'Pendiente', 'Entregado', 'Anulado'
             $table->decimal('total', 10, 2)->nullable();
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('fecha_registro')->useCurrent();
 
             $table->foreign('id_cliente')
-                  ->references('id_cliente')
+                  ->references('id')
                   ->on('cliente')
                   ->onDelete('restrict')
                   ->onUpdate('cascade');
